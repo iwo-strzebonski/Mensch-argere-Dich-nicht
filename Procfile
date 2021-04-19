@@ -1,1 +1,1 @@
-web: gunicorn madn:app
+web: gunicorn wsgi:app
