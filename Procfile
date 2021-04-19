@@ -1,1 +1,1 @@
-web: gunicorn madn
+web: gunicorn madn:app
