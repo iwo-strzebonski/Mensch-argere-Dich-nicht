@@ -1,6 +1,7 @@
 import secrets
 from flask import Flask
 from flask_caching import Cache
+from flask_cors import CORS
 
 app = Flask(__name__)
 config = {
@@ -14,6 +15,7 @@ config = {
 app.config.from_mapping(config)
 
 cache = Cache(app)
+CORS(app)
 
 with app.app_context():
     cache.clear()
