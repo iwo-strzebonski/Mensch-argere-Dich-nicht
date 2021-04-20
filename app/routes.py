@@ -6,6 +6,8 @@ import datetime
 from flask import send_from_directory, make_response, request
 from flask_caching import Cache
 
+from flask_cors import CORS, cross_origin
+
 from app import app
 from app import helpers
 
@@ -14,7 +16,7 @@ DELTA = datetime.timedelta(minutes=5)
 
 
 cache = Cache(app)
-
+cors = CORS(app, resources= { r'/post': { "origins": "http://localhost:5000" } })
 
 mimetypes.add_type('text/css', '.css')
 mimetypes.add_type('text/javascript', '.js')
@@ -27,7 +29,7 @@ room_helper = helpers.Helpers.Room(cache)
 
 
 @app.route('/', methods=['GET'])
-# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def index():
     '''
     Returns main page
@@ -46,7 +48,7 @@ def index():
 
 
 @app.route('/<path:path>', methods=['GET'])
-# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def static_proxy(path):
     '''
     Returns requested static element
@@ -63,7 +65,7 @@ def static_proxy(path):
     return res
 
 @app.route('/post', methods=['POST'])
-# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def post():
     '''
     POST methods
@@ -78,7 +80,7 @@ def post():
 
         res = make_response(str(t))
         # res = make_response(cache.get(uid))
-        
+
     elif 'M32' in request.form:
         sid = request.form['M32']
         player_data = '-1' if cache.get(sid) is None else cache.get(sid)
