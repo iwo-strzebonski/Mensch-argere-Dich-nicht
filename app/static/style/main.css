@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body * {
+    font-weight: 300;
+    font-family: 'Roboto', sans-serif;
+}
+
+#getName {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-color: black;
+}
+
+#getName span {
+    position: relative;
+    line-height: 32px;
+    top: calc(50% - 32px);
+}
+
+label {
+    color: white;
+}
