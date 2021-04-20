@@ -27,6 +27,7 @@ room_helper = helpers.Helpers.Room(cache)
 
 
 @app.route('/', methods=['GET'])
+# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def index():
     '''
     Returns main page
@@ -38,13 +39,14 @@ def index():
         uid = str(uuid.uuid4())
         res.set_cookie('session', bytes(uid, 'utf-8'), secure=True, max_age=DELTA)
 
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['X-Content-Type-Options'] = 'nosniff'
+    res.header.add('Access-Control-Allow-Origin', '*')
+    res.headers.add('X-Content-Type-Options', 'nosniff')
 
     return res
 
 
 @app.route('/<path:path>', methods=['GET'])
+# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def static_proxy(path):
     '''
     Returns requested static element
@@ -54,12 +56,14 @@ def static_proxy(path):
     '''
 
     res = make_response(send_from_directory(root, path))
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['X-Content-Type-Options'] = 'nosniff'
+    
+    res.header.add('Access-Control-Allow-Origin', '*')
+    res.headers.add('X-Content-Type-Options', 'nosniff')
 
     return res
 
 @app.route('/post', methods=['POST'])
+# @cross_origin(origin='*', headers=['Content-Type','Authorization'])
 def post():
     '''
     POST methods
@@ -74,7 +78,7 @@ def post():
 
         res = make_response(str(t))
         # res = make_response(cache.get(uid))
-        
+
     elif 'M32' in request.form:
         sid = request.form['M32']
         player_data = '-1' if cache.get(sid) is None else cache.get(sid)
@@ -82,6 +86,7 @@ def post():
     else:
         res = make_response(request.form)
 
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['X-Content-Type-Options'] = 'nosniff'
+    res.header.add('Access-Control-Allow-Origin', '*')
+    res.headers.add('X-Content-Type-Options', 'nosniff')
+    
     return res
