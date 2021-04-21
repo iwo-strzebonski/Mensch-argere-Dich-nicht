@@ -16,7 +16,7 @@ DELTA = datetime.timedelta(minutes=5)
 
 
 cache = Cache(app)
-cors = CORS(app, resources= { r'/post': { "origins": "http://localhost:5000" } })
+cors = CORS(app)
 
 mimetypes.add_type('text/css', '.css')
 mimetypes.add_type('text/javascript', '.js')
@@ -29,7 +29,7 @@ room_helper = helpers.Helpers.Room(cache)
 
 
 @app.route('/', methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin()
 def index():
     '''
     Returns main page
@@ -48,7 +48,7 @@ def index():
 
 
 @app.route('/<path:path>', methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin()
 def static_proxy(path):
     '''
     Returns requested static element
@@ -65,7 +65,7 @@ def static_proxy(path):
     return res
 
 @app.route('/post', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type','Authorization'])
+@cross_origin()
 def post():
     '''
     POST methods
