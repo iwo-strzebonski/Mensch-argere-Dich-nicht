@@ -8,7 +8,7 @@ from flask_caching import Cache
 from flask_cors import CORS, cross_origin
 
 from app import app
-from app import helpers
+from app import Room
 
 
 import logging
@@ -31,7 +31,7 @@ root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 
 
 # Helpers
-room_helper = helpers.Helpers.Room(cache)
+room_helper = Room.Room(cache)
 
 
 
@@ -66,16 +66,13 @@ def static_proxy(path):
     return res
 
 
-@app.route('/post', methods=['POST', 'OPTIONS'])
+@app.route('/post', methods=['POST'])
 @cross_origin()
 def post():
     '''
     POST methods
     '''
     uid = request.cookies.get('session')
-    
-    if request.method == 'OPTIONS':
-        return cors_options
 
     if 'M23' in request.form:
         name = request.form['M23']
@@ -91,21 +88,5 @@ def post():
         res = make_response(player_data)
     else:
         res = make_response(request.form)
-
-    res.headers['Access-Control-Allow-Origin'] = '*'
-
-    return res
-
-def cors_options():
-    '''
-    OPTIONS method
-    '''
-
-    res = make_response()
-
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['Access-Control-Allow-Headers'] = '*'
-    res.headers['Access-Control-Allow-Methods'] = '*'
-    res.headers['X-Content-Type-Options'] = 'nosniff'
 
     return res
