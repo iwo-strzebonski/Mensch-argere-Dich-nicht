@@ -1,11 +1,14 @@
 '''
-Helpers used by Flask server
+Room helpers
 '''
 
 import uuid
-from random import randint
+import secrets
 
 class Room:
+    '''Class for handling room data
+    '''
+
     def __init__(self, cache):
         self.cache = cache
         self.cache.set('rooms', [])
@@ -16,11 +19,15 @@ class Room:
         self.cache.set('rooms', rooms)
 
     def get_first_empty(self):
+        room_name = str(uuid.uuid4())
+
+        if self.cache.get('rooms') is None:
+            self.create(room_name)
+
         for room in self.cache.get('rooms'):
             if room['count'] < 4:
                 return room['name']
 
-        room_name = str(uuid.uuid4())
         self.create(room_name)
 
         return room_name
@@ -29,18 +36,32 @@ class Room:
         room_name = self.get_first_empty()
 
         rooms = self.cache.get('rooms')
-        color = randint(0, 3)
-
-        count = -1
+        colors = [0, 1, 2, 3]
 
         for i in enumerate(rooms):
             if room_name in rooms[i[0]]['name']:
+
+                if len(rooms[i[0]]['players']) > 0:
+                    for c in rooms[i[0]]['players']:
+                        colors.remove(c['color'])
+
+                color = secrets.choice(colors)
+
                 rooms[i[0]]['players'].append( { 'uid': uid, 'color': color } )
                 rooms[i[0]]['count'] += 1
-                count = rooms[i[0]]['count']
+
                 break
 
         self.cache.set('rooms', rooms)
         self.cache.set(uid, { 'name': name, 'room': room_name, 'color': color } )
 
-        return rooms, count
+    def get_room_from_player(self, uid):
+        if self.cache.get('rooms') is None:
+            return '-1'
+
+        for room in self.cache.get('rooms'):
+            for player in room['players']:
+                if player['uid'] == uid:
+                    return room
+
+        return '-1'

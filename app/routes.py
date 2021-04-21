@@ -1,22 +1,21 @@
+'''
+Flask routing module
+'''
+
 import os
 import mimetypes
 import uuid
 import datetime
-from flask import send_from_directory, make_response, request
-from flask_caching import Cache
 
+from flask import send_from_directory, make_response, request, jsonify
+from flask_caching import Cache
 from flask_cors import CORS, cross_origin
 
 from app import app
-from app import Room
+from app import room
+from app import player
 
-
-import logging
-logging.getLogger('flask_cors').level = logging.DEBUG
-
-
-DELTA = datetime.timedelta(minutes=5)
-
+DELTA = datetime.timedelta(hours=1)
 
 cache = Cache(app)
 CORS(app)
@@ -31,15 +30,17 @@ root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 
 
 # Helpers
-room_helper = Room.Room(cache)
-
+room_helper = room.Room(cache)
+player_helper = player.Player(cache)
 
 
 @app.route('/', methods=['GET'])
 @cross_origin()
 def index():
-    '''
-    Returns main page
+    '''Routing for main page (GET method)
+
+    Returns:
+        text/html: Main page (index.html)
     '''
 
     res = make_response(send_from_directory(root, 'index.html'))
@@ -54,11 +55,13 @@ def index():
 @app.route('/<path:path>', methods=['GET'])
 @cross_origin()
 def static_proxy(path):
-    '''
-    Returns requested static element
+    '''Routing for requested static element (GET method)
 
-    Keyword arguments:
-    path -- absolute path to directory containing static files
+    Args:
+        path (str): Absolute path to directory containing static files
+
+    Returns:
+        file <mimetype>: Requested file
     '''
 
     res = make_response(send_from_directory(root, path))
@@ -69,23 +72,31 @@ def static_proxy(path):
 @app.route('/post', methods=['POST'])
 @cross_origin()
 def post():
+    '''Routing for POST methods
+
+    Returns:
+        JSON: Requested data
     '''
-    POST methods
-    '''
-    uid = request.cookies.get('session')
 
-    if 'M23' in request.form:
-        name = request.form['M23']
+    sid = request.cookies.get('session')
 
-        data = room_helper.add_player(name, uid)
+    if 'M21' in request.form:
+        room_helper.add_player(request.form['M21'], sid)
 
-        res = make_response(str(data))
-        # res = make_response(cache.get(uid))
+        players = player_helper.get_players_from_room(sid)
+        res = make_response(jsonify(players))
 
-    elif 'M32' in request.form:
-        sid = request.form['M32']
-        player_data = '-1' if cache.get(sid) is None else cache.get(sid)
-        res = make_response(player_data)
+    elif 'M20' in request.form and cache.get(sid) is not None:
+        players = player_helper.get_players_from_room(sid)
+        res = make_response(jsonify(players))
+
+    elif 'M20' in request.form:
+        player_data = room_helper.get_room_from_player(sid)
+        res = make_response(jsonify(player_data))
+
+    elif 'M80' in request.form:
+        res = make_response(jsonify(player_helper.roll_dice()))
+
     else:
         res = make_response(request.form)
 

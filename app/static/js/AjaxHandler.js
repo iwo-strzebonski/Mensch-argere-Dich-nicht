@@ -1,4 +1,4 @@
-import { CookieHandler } from './CookieHandler.js'
+import { HTMLGenerator } from './HTMLGenerator.js'
 
 /**
  * Ajax request handler
@@ -17,18 +17,20 @@ export class AjaxHandler {
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                const response = xhr.responseText
-                console.log('response :>> ', response)
+                let response = JSON.parse(xhr.responseText)
 
-                if (xhr.responseText == -1) {
-                    document.getElementById('getName').style.display = ''
-                } else {
+                if (response != -1 && name !== 'M80') {
                     document.getElementById('getName').remove()
+                    
+                    HTMLGenerator.addPlayerNames(response)
+                } else if (name === 'M80') {
+                    console.log(response)
+                } else {
+                    document.getElementById('getName').style.display = ''
                 }
             }
         }
 
-        console.log(location.href)
         xhr.open('POST', location.href + '/post')
         xhr.send( formData )
     }
@@ -39,7 +41,7 @@ export class AjaxHandler {
     static playerName() {
         const player = document.getElementById('player').value
 
-        if (player.length > 0 && player.length < 16) this.sendPost('M23', player) // M23 - Send player name
+        if (player.length > 0 && player.length < 16) this.sendPost('M21', player) // M21 - Send player name
         else if (player === '') alert('Please provide your nickname!')
         else alert('Your nickname is too long!')
     }
@@ -48,6 +50,13 @@ export class AjaxHandler {
      * Checks if there's already user data on server
      */
     static checkForSession() {
-        this.sendPost('M32', CookieHandler.getSID()) // M32 - Start game
+        this.sendPost('M20') // M20 - List room data
+    }
+
+    /**
+     * Gets roll result
+     */
+    static getRollResult() {
+        this.sendPost('M80') // M80 - Get roll result
     }
 }
