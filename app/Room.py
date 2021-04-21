@@ -42,8 +42,8 @@ class Room:
             if room_name in rooms[i[0]]['name']:
 
                 if len(rooms[i[0]]['players']) > 0:
-                    for c in rooms[i[0]]['players']:
-                        colors.remove(c['color'])
+                    for j in rooms[i[0]]['players']:
+                        colors.remove(j['color'])
 
                 color = secrets.choice(colors)
 
