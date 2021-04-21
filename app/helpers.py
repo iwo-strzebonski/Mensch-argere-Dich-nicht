@@ -13,12 +13,12 @@ class Helpers:
 
         def create(self, name):
             rooms = self.cache.get('rooms')
-            rooms.append( { 'name': name, 'players': [] } )
+            rooms.append( { 'name': name, 'players': [], 'count': 0 } )
             self.cache.set('rooms', rooms)
 
         def get_first_empty(self):
             for room in self.cache.get('rooms'):
-                if len(room['players']) < 3:
+                if room['count'] < 4:
                     return room['name']
 
             room_name = str(uuid.uuid4())
@@ -32,12 +32,16 @@ class Helpers:
             rooms = self.cache.get('rooms')
             color = randint(0, 3)
 
+            count = -1
+
             for i in enumerate(rooms):
                 if room_name in rooms[i[0]]['name']:
                     rooms[i[0]]['players'].append( { 'uid': uid, 'color': color } )
+                    rooms[i[0]]['count'] += 1
+                    count = rooms[i[0]]['count']
                     break
 
             self.cache.set('rooms', rooms)
             self.cache.set(uid, { 'name': name, 'room': room_name, 'color': color } )
 
-            return rooms
+            return rooms, count

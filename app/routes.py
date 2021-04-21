@@ -45,9 +45,6 @@ def index():
         uid = str(uuid.uuid4())
         res.set_cookie('session', bytes(uid, 'utf-8'), secure=True, max_age=DELTA)
 
-    # res.header['Access-Control-Allow-Origin'] = '*'
-    # res.headers['X-Content-Type-Options'] = 'nosniff'
-
     return res
 
 
@@ -63,10 +60,8 @@ def static_proxy(path):
 
     res = make_response(send_from_directory(root, path))
 
-    # res.headers['Access-Control-Allow-Origin'] = '*'
-    # res.headers['X-Content-Type-Options'] = 'nosniff'
-
     return res
+
 
 @app.route('/post', methods=['POST'])
 @cross_origin()
@@ -80,9 +75,9 @@ def post():
     if 'M23' in request.form:
         name = request.form['M23']
 
-        t = room_helper.add_player(name, uid)
+        data = room_helper.add_player(name, uid)
 
-        res = make_response(str(t))
+        res = make_response(str(data))
         # res = make_response(cache.get(uid))
 
     elif 'M32' in request.form:
@@ -92,7 +87,17 @@ def post():
     else:
         res = make_response(request.form)
 
-    # res.headers['Access-Control-Allow-Origin'] = '*'
-    # res.headers['X-Content-Type-Options'] = 'nosniff'
+    return res
+
+
+@app.route('/post', methods=['POST'])
+@cross_origin()
+def options():
+    res = make_response()
+
+    res.headers['Access-Control-Allow-Origin'] = '*'
+    res.headers['Access-Control-Allow-Headers'] = '*'
+    res.headers['Access-Control-Allow-Methods'] = '*'
+    res.headers['X-Content-Type-Options'] = 'nosniff'
 
     return res
