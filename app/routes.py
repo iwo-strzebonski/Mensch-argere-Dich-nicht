@@ -63,13 +63,15 @@ def static_proxy(path):
     return res
 
 
-@app.route('/post', methods=['POST'])
+@app.route('/post', methods=['POST', 'OPTIONS'])
 @cross_origin()
 def post():
     '''
     POST methods
     '''
-
+    if request.method == 'OPTIONS':
+        return cors_options()
+    
     uid = request.cookies.get('session')
 
     if 'M23' in request.form:
@@ -89,10 +91,11 @@ def post():
 
     return res
 
+def cors_options():
+    '''
+    OPTIONS method
+    '''
 
-@app.route('/post', methods=['POST'])
-@cross_origin()
-def options():
     res = make_response()
 
     res.headers['Access-Control-Allow-Origin'] = '*'
