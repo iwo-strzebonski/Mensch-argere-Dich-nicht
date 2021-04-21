@@ -17,16 +17,18 @@ export class AjaxHandler {
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                let response = JSON.parse(xhr.responseText)
+                let response = xhr.responseText
 
-                if (response != -1 && name !== 'M80') {
-                    document.getElementById('getName').remove()
-                    
+                if (response != -1 && name !== 'M80' && name !== 'M27') {
+                    response = Object.values(JSON.parse(response))
                     HTMLGenerator.addPlayerNames(response)
+
+                    document.getElementById('getName').remove()
                 } else if (name === 'M80') {
                     console.log(response)
-                } else {
-                    document.getElementById('getName').style.display = ''
+                } else if (response != -1 && name === 'M27') {
+                    response = Object.values(JSON.parse(response))
+                    HTMLGenerator.addPlayerNames(response)
                 }
             }
         }
@@ -49,7 +51,7 @@ export class AjaxHandler {
     /** 
      * Checks if there's already user data on server
      */
-    static checkForSession() {
+    static checkSession() {
         this.sendPost('M20') // M20 - List room data
     }
 
@@ -58,5 +60,12 @@ export class AjaxHandler {
      */
     static getRollResult() {
         this.sendPost('M80') // M80 - Get roll result
+    }
+
+    /**
+     * Gets list of players in a specific room
+     */
+    static getPlayers() {
+        this.sendPost('M27') // M27 - Get player list
     }
 }

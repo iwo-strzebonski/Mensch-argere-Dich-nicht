@@ -15,7 +15,7 @@ from app import app
 from app.helpers import room
 from app.helpers import player
 
-DELTA = datetime.timedelta(hours=1)
+DELTA = datetime.timedelta(days=1)
 
 cache = Cache(app)
 CORS(app)
@@ -86,16 +86,19 @@ def post():
         players = player_helper.get_players_from_room(sid)
         res = make_response(jsonify(players))
 
-    elif 'M20' in request.form and cache.get(sid) is not None:
+    elif ('M20' in request.form or 'M27' in request.form) and cache.get(sid) is not None:
         players = player_helper.get_players_from_room(sid)
         res = make_response(jsonify(players))
 
     elif 'M20' in request.form:
         player_data = room_helper.get_room_from_player(sid)
-        res = make_response(jsonify(player_data))
+        res = make_response(str(player_data))
+
+    elif 'M27' in request.form:
+        res = make_response('-1')
 
     elif 'M80' in request.form:
-        res = make_response(jsonify(player_helper.roll_dice()))
+        res = make_response(str(player_helper.roll_dice()))
 
     else:
         res = make_response(request.form)
