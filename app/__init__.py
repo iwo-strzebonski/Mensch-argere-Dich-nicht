@@ -14,11 +14,5 @@ config = {
 
 app.config.from_mapping(config)
 
-cache = Cache(app)
-CORS(app)
-
-with app.app_context():
-    cache.clear()
-
 # pylint: disable=wrong-import-position
 from app import routes
