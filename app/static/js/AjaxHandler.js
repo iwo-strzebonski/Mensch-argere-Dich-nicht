@@ -28,7 +28,8 @@ export class AjaxHandler {
             }
         }
 
-        xhr.open('POST', 'http://localhost:5000/post')
+        console.log(location.href)
+        xhr.open('POST', location.href + '/post')
         xhr.send( formData )
     }
 

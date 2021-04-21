@@ -9,7 +9,7 @@ config = {
     'CACHE_TYPE': 'SimpleCache',
     'CACHE_DEFAULT_TIMEOUT': 300,
     'SECRET_KEY': '9317f2b87044b56c44ca2502d3f945af',
-    # 'CORS_HEADERS': 'Content-Type'
+    'CORS_HEADERS': 'Content-Type'
 }
 
 app.config.from_mapping(config)

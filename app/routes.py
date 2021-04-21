@@ -5,7 +5,7 @@ import datetime
 from flask import send_from_directory, make_response, request
 from flask_caching import Cache
 
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from app import app
 from app import helpers
@@ -36,7 +36,7 @@ room_helper = helpers.Helpers.Room(cache)
 
 
 @app.route('/', methods=['GET'])
-# @cross_origin()
+@cross_origin()
 def index():
     '''
     Returns main page
@@ -52,7 +52,7 @@ def index():
 
 
 @app.route('/<path:path>', methods=['GET'])
-# @cross_origin()
+@cross_origin()
 def static_proxy(path):
     '''
     Returns requested static element
@@ -66,14 +66,16 @@ def static_proxy(path):
     return res
 
 
-# @app.route('/post', methods=['POST', 'OPTIONS'])
-@app.route('/post', methods=['POST'])
-# @cross_origin()
+@app.route('/post', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def post():
     '''
     POST methods
     '''
     uid = request.cookies.get('session')
+    
+    if request.method == 'OPTIONS':
+        return cors_options
 
     if 'M23' in request.form:
         name = request.form['M23']
@@ -90,6 +92,8 @@ def post():
     else:
         res = make_response(request.form)
 
+    res.headers['Access-Control-Allow-Origin'] = '*'
+
     return res
 
 def cors_options():
@@ -99,9 +103,9 @@ def cors_options():
 
     res = make_response()
 
-    # res.headers['Access-Control-Allow-Origin'] = '*'
-    # res.headers['Access-Control-Allow-Headers'] = '*'
-    # res.headers['Access-Control-Allow-Methods'] = '*'
-    # res.headers['X-Content-Type-Options'] = 'nosniff'
+    res.headers['Access-Control-Allow-Origin'] = '*'
+    res.headers['Access-Control-Allow-Headers'] = '*'
+    res.headers['Access-Control-Allow-Methods'] = '*'
+    res.headers['X-Content-Type-Options'] = 'nosniff'
 
     return res
