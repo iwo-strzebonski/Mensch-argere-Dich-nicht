@@ -2,7 +2,6 @@ import os
 import mimetypes
 import uuid
 import datetime
-
 from flask import send_from_directory, make_response, request
 from flask_caching import Cache
 
@@ -10,6 +9,10 @@ from flask_cors import CORS, cross_origin
 
 from app import app
 from app import helpers
+
+
+import logging
+logging.getLogger('flask_cors').level = logging.DEBUG
 
 
 DELTA = datetime.timedelta(minutes=5)
@@ -22,6 +25,7 @@ mimetypes.add_type('text/css', '.css')
 mimetypes.add_type('text/javascript', '.js')
 
 root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+
 
 # Helpers
 room_helper = helpers.Helpers.Room(cache)

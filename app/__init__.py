@@ -1,6 +1,7 @@
 import secrets
 from flask import Flask
 from flask_caching import Cache
+from flask_cors import CORS
 
 app = Flask(__name__)
 config = {
@@ -8,12 +9,13 @@ config = {
     'CACHE_TYPE': 'SimpleCache',
     'CACHE_DEFAULT_TIMEOUT': 300,
     'SECRET_KEY': '9317f2b87044b56c44ca2502d3f945af',
-    'CORS_HEADERS': 'Content-Type'
+    # 'CORS_HEADERS': 'Content-Type'
 }
 
 app.config.from_mapping(config)
 
 cache = Cache(app)
+CORS(app)
 
 with app.app_context():
     cache.clear()
