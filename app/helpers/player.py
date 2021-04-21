@@ -2,7 +2,7 @@
 '''
 import secrets
 
-from app import room
+from app.helpers import room
 
 class Player:
     '''Class for handling player data

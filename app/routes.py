@@ -12,8 +12,8 @@ from flask_caching import Cache
 from flask_cors import CORS, cross_origin
 
 from app import app
-from app import room
-from app import player
+from app.helpers import room
+from app.helpers import player
 
 DELTA = datetime.timedelta(hours=1)
 
