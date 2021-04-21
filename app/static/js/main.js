@@ -6,7 +6,7 @@ const playerListLoop = async() => {
     const BOOL = true
     while (BOOL) {
         AjaxHandler.getPlayers()
-        await new Promise(r=>setTimeout(r,500))
+        await new Promise(r=>setTimeout(r,2000))
     }
 }
 
