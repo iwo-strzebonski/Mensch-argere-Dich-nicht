@@ -6,7 +6,8 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
-    background-color: gainsboro;
+    min-width: 528px;
+    background-color: #FFCCCC;
 }
 
 body * {
@@ -16,6 +17,7 @@ body * {
 }
 
 #getName {
+    z-index: 999;
     position: fixed;
     top: 0;
     left: 0;
@@ -32,6 +34,14 @@ body * {
 }
 
 label {
+    font-weight: 700;
+}
+
+#readyLabel {
+    color: black;
+}
+
+#nameLabel {
     color: white;
 }
 
@@ -47,8 +57,8 @@ label {
 }
 
 #player0 {
-    background-color: red;
-    color: white;
+    background-color: white;
+    color: black;
 }
 
 #player1 {
@@ -64,4 +74,68 @@ label {
 #player3 {
     background-color: yellow;
     color: black;
+}
+
+input[type=checkbox] {
+    cursor: pointer;
+}
+
+.fields,
+.homes,
+.outs {
+    box-sizing: border-box;
+    border: 1px solid black;
+    position: absolute;
+    width: 48px;
+    height: 48px;
+}
+
+#dice {
+    position: absolute;
+    top: 256px;
+    left: 256px;
+    width: 48px;
+    height: 48px;
+}
+
+.fields {
+    background-color: gray;
+}
+
+.homes {
+    background-color: #2f2f2f;
+}
+
+.whites {
+    background-color: white;
+}
+
+.blues {
+    background-color: blue;
+}
+
+.greens {
+    background-color: green;
+}
+
+.yellows {
+    background-color: yellow;
+}
+
+#board {
+    position: absolute;
+    top: 96px;
+    left: calc(50% - 280px);
+    width: 560px;
+    height: 560px;
+    background-color: darkred;
+}
+
+#roll {
+    font-weight: 700;
+    font-style: italic;
+    position: absolute;
+    top: 60px;
+    left: calc(50% - 23.5px);
+    width: 47px;
 }

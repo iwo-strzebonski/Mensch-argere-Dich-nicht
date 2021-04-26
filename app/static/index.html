@@ -14,7 +14,7 @@
 <body>
     <div id='getName'>
         <span>
-            <label for='player'>Your nickname:</label>
+            <label for='player' id='nameLabel'>Your nickname:</label>
             <input type='text' name='player' id='player'>
             <button id='submit'>OK</button>
         </span>
@@ -22,13 +22,23 @@
 
     <main>
         <div>
+            <div class='player' id='check'>
+                <label for='state'>Ready?</label>
+                <input type='checkbox' name='state' id='state'>
+            </div>
             <div class='player' id='player3'></div>
             <div class='player' id='player2'></div>
             <div class='player' id='player1'></div>
             <div class='player' id='player0'></div>
         </div>
 
+        <div id='board'>
+            <img src='img/dice-x.svg' id='dice'>
+        </div>
+
         <button id='roll'>Roll!</button>
+
+        <span id='timer'></span>
     </main>
 </body>
 

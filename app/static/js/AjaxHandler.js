@@ -1,4 +1,5 @@
 import { HTMLGenerator } from './HTMLGenerator.js'
+import { TTSHandler } from './TTSHandler.js'
 
 /**
  * Ajax request handler
@@ -18,17 +19,20 @@ export class AjaxHandler {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 let response = xhr.responseText
+                if (response.includes(null)) return
 
-                if (response != -1 && name !== 'M80' && name !== 'M27') {
+                if (!['M80','M118', 'M119'].includes(name)) {
+                    if (JSON.parse(response) == '-1' || response.length === 0) return
+
                     response = Object.values(JSON.parse(response))
                     HTMLGenerator.addPlayerNames(response)
 
-                    document.getElementById('getName').remove()
+                    if (name !== 'M27') document.getElementById('getName').remove()
                 } else if (name === 'M80') {
-                    console.log(response)
-                } else if (response != -1 && name === 'M27') {
-                    response = Object.values(JSON.parse(response))
-                    HTMLGenerator.addPlayerNames(response)
+                    TTSHandler.main(response)
+                    document.getElementById('dice').src = 'img/dice-' + response + '.svg'
+                } else if (['M118', 'M119'].includes(name)) {
+                    if (!!JSON.parse(response) && document.getElementById('check') !== null) document.getElementById('check').remove()
                 }
             }
         }
@@ -67,5 +71,20 @@ export class AjaxHandler {
      */
     static getPlayers() {
         this.sendPost('M27') // M27 - Get player list
+    }
+
+    /**
+     * Sends info to server if player is ready
+     * @param {Boolean} state - Player's state
+     */
+    static sendState(state) {
+        this.sendPost('M118', state) // M118 - Send player state
+    }
+
+    /**
+     * Checks if the game has started
+     */
+    static getState() {
+        this.sendPost('M119') // M119 - Get game state
     }
 }
