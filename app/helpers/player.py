@@ -94,6 +94,15 @@ class Player:
         return '-1'
 
     def get_next_color(self, players, color):
+        '''Gets next player number, so they can be informed about their turn
+
+        Args:
+            players (list): List of all players in the room
+            color (int): Current player's number/color
+
+        Returns:
+            int: Next player
+        '''
         while color < 5:
             color = 0 if color == 4 else color + 1
             if color in self.get_player_colors(players):
@@ -101,4 +110,12 @@ class Player:
 
     @classmethod
     def get_player_colors(cls, players):
+        '''Gets all player numbers/colors
+
+        Args:
+            players (list): List of all players in the room
+
+        Returns:
+            list: List of all used player numbers/colors
+        '''
         return [i['color'] for i in players]

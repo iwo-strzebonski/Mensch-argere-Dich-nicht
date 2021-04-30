@@ -198,7 +198,15 @@ class Room:
         return state
 
     @classmethod
-    def get_first_player(cls, room):
-        arr = [i['color'] for i in room]
+    def get_first_player(cls, players):
+        '''Gets the first player for the game
+
+        Args:
+            players (list): List of all players in the room
+
+        Returns:
+            int: First player
+        '''
+        arr = [i['color'] for i in players]
         arr.sort()
         return arr[0]

@@ -139,3 +139,17 @@ input[type=checkbox] {
     left: calc(50% - 23.5px);
     width: 47px;
 }
+
+#timer {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    border: 1px solid black;
+    font-weight: 700;
+    background-color: gainsboro;
+    border-radius: 4px;
+    text-align: center;
+    padding: 1ch;
+    width: 2ch;
+    height: 2ch;
+}

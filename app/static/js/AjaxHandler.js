@@ -5,8 +5,6 @@ import { TTSHandler } from './TTSHandler.js'
  * Ajax request handler
  */
 export class AjaxHandler {
-    static timestamp = 0
-
     /** 
      * Sends data using POST method
      * @param {String} name - Field's name
@@ -49,17 +47,20 @@ export class AjaxHandler {
 
                         if (color === turn && state) {
                             document.getElementById('roll').style.display = 'initial'
-                            if (AjaxHandler.timestamp === 0) AjaxHandler.timestamp = new Date().getTime()
-                            else if (new Date().getTime() - AjaxHandler.timestamp >= 10000) {
+
+                            if (localStorage.getItem('timestamp') == 0 || localStorage.getItem('timestamp') == null) localStorage.setItem('timestamp', new Date().getTime())
+
+                            else if (new Date().getTime() - localStorage.getItem('timestamp') >= 10000) {
                                 AjaxHandler.pass()
-                                AjaxHandler.timestamp = 0
-                                document.getElementById('roll').style.display = 'none'
-                                console.log('dupa')
+                            } else {
+                                document.getElementById('timer').innerText = 10 - Math.round((new Date().getTime() - localStorage.getItem('timestamp')) / 1000)
                             }
                         }
                         else {
+                            localStorage.setItem('timestamp', 0)
                             document.getElementById('roll').style.display = 'none'
-                            AjaxHandler.timestamp = 0
+                            document.getElementById('timer').innerText = 'X'
+                            // document.getElementById('dice').src = 'img/dice-x.svg'
                         }
                     }
                 }
@@ -107,6 +108,10 @@ export class AjaxHandler {
      */
     static pass() {
         this.sendPost('M81') // M81 - Pass
+        localStorage.setItem('timestamp', 0)
+        document.getElementById('roll').style.display = 'none'
+        document.getElementById('timer').innerText = 'X'
+        document.getElementById('dice').src = 'img/dice-x.svg'
     }
 
     /**
