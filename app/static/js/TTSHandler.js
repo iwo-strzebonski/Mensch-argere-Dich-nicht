@@ -7,8 +7,8 @@ export class TTSHandler {
      * @param {String} msg - message to be spoken by Speech Synthesis
      */
     static main(msg) {
-        let speechSynthesisUtteranc = new SpeechSynthesisUtterance()
-        speechSynthesisUtteranc.text = msg
-        window.speechSynthesis.speak(speechSynthesisUtteranc)    
+        let speechSynthesisUtterance = new SpeechSynthesisUtterance()
+        speechSynthesisUtterance.text = msg
+        window.speechSynthesis.speak(speechSynthesisUtterance)    
     }
 }
