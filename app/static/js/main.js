@@ -6,18 +6,16 @@ const AjaxLoop = async() => {
     const BOOL = true
     while (BOOL) {
         AjaxHandler.getPlayers()
-        AjaxHandler.getState()
-        await new Promise(r=>setTimeout(r,1000))
+        await new Promise(r=>setTimeout(r,500))
+        AjaxHandler.getRoomData()
+        await new Promise(r=>setTimeout(r,500))
     }
 }
 
 window.onload = async() => {
-    document.getElementById('state').checked = false
-    AjaxHandler.sendState(false)
-
     AjaxHandler.checkSession()
     HTMLGenerator.genBoard()
-    
+
     AjaxLoop()
 }
 

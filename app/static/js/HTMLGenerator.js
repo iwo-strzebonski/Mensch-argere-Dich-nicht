@@ -118,22 +118,22 @@ export class HTMLGenerator {
 
             if (Array.range(0, 4).includes(i)) {
                 div.classList.add('whites')
-                div.id = 'o' + i
+                div.id = 'w-o' + i
                 div.style.top = OFFSET + (i < 2 ? 0 : SIZE) + 'px'
                 div.style.left = OFFSET + (i % 2 !== 0 ? 0 : SIZE) + 'px'
             } else if (Array.range(4, 8).includes(i)) {
                 div.classList.add('blues')
-                div.id = 'o' + (i - 4)
+                div.id = 'b-o' + (i - 4)
                 div.style.top = OFFSET + (i < 6 ? 0 : SIZE) + 'px'
                 div.style.left = OFFSET + (i % 2 !== 0 ? 0 : SIZE) + 9 * SIZE + 'px'
             } else if (Array.range(8, 12).includes(i)) {
                 div.classList.add('greens')
-                div.id = 'o' + (i - 8)
+                div.id = 'g-o' + (i - 8)
                 div.style.top = OFFSET + (i < 10 ? 0 : SIZE) + 9 * SIZE + 'px'
                 div.style.left = OFFSET + (i % 2 !== 0 ? 0 : SIZE) + 9 * SIZE + 'px'
             } else {
                 div.classList.add('yellows')
-                div.id = 'o' + (i - 12)
+                div.id = 'y-o' + (i - 12)
                 div.style.top = OFFSET + (i < 14 ? 0 : SIZE) + 9 * SIZE + 'px'
                 div.style.left = OFFSET + (i % 2 !== 0 ? 0 : SIZE) + 'px'
             }

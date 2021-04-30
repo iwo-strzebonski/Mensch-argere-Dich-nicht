@@ -26,7 +26,13 @@ class Room:
         if rooms is None:
             rooms = []
 
-        rooms.append( { 'name': name, 'players': [], 'count': 0 } )
+        rooms.append( { 'name': name, 'players': [], 'count': 0, 'data': {
+            'turn': -1,
+            '0': [-1, -1, -1, -1],
+            '1': [-1, -1, -1, -1],
+            '2': [-1, -1, -1, -1],
+            '3': [-1, -1, -1, -1]
+        } } )
         self.cache.set('rooms', rooms)
 
     def get_first_empty(self):
@@ -134,6 +140,7 @@ class Room:
         for i in enumerate(rooms):
             for player in rooms[i[0]]['players']:
                 if player['uid'] == uid:
+                    rooms[i[0]]['data']['turn'] = self.get_first_player(rooms[i[0]]['players'])
                     rooms[i[0]]['count'] = 5
                     break
 
@@ -163,7 +170,7 @@ class Room:
                 break
 
             for i in room['players']:
-                if player['uid'] == i['uid']:
+                if player['uid'] == i['uid'] and player['ready']:
                     temp += 1
 
             if temp == room['count'] and temp > 1:
@@ -189,3 +196,9 @@ class Room:
             state = True
 
         return state
+
+    @classmethod
+    def get_first_player(cls, room):
+        arr = [i['color'] for i in room]
+        arr.sort()
+        return arr[0]

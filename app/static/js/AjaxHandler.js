@@ -5,6 +5,8 @@ import { TTSHandler } from './TTSHandler.js'
  * Ajax request handler
  */
 export class AjaxHandler {
+    static timestamp = 0
+
     /** 
      * Sends data using POST method
      * @param {String} name - Field's name
@@ -18,27 +20,61 @@ export class AjaxHandler {
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                let response = xhr.responseText
-                if (response.includes(null)) return
+                if (xhr.responseText.includes(null)) return
+                let response = JSON.parse(xhr.responseText)
 
-                if (!['M80','M118', 'M119'].includes(name)) {
-                    if (JSON.parse(response) == '-1' || response.length === 0) return
+                if (['M20','M21', 'M27'].includes(name)) {
+                    if (response == '-1' || response.length === 0) return
+                    let state = AjaxHandler.getPlayerState(response)
 
-                    response = Object.values(JSON.parse(response))
+                    response = Object.values(response)
                     HTMLGenerator.addPlayerNames(response)
 
                     if (name !== 'M27') document.getElementById('getName').remove()
+                    try { document.getElementById('state').checked = state }
+                    catch { 'pass' }
                 } else if (name === 'M80') {
                     TTSHandler.main(response)
                     document.getElementById('dice').src = 'img/dice-' + response + '.svg'
-                } else if (['M118', 'M119'].includes(name)) {
-                    if (!!JSON.parse(response) && document.getElementById('check') !== null) document.getElementById('check').remove()
+                } else if (name === 'G11') {
+                    if (response != '-1') {
+                        let color = AjaxHandler.getPlayerColor(response.players)
+                        let turn = response.data.turn
+                        let state = response.count === 5
+
+                        if (state) {
+                            try { document.getElementById('check').remove() }
+                            catch { 'pass' }
+                        }
+
+                        if (color === turn && state) {
+                            document.getElementById('roll').style.display = 'initial'
+                            if (AjaxHandler.timestamp === 0) AjaxHandler.timestamp = new Date().getTime()
+                            else if (new Date().getTime() - AjaxHandler.timestamp >= 10000) {
+                                AjaxHandler.pass()
+                                AjaxHandler.timestamp = 0
+                                document.getElementById('roll').style.display = 'none'
+                                console.log('dupa')
+                            }
+                        }
+                        else {
+                            document.getElementById('roll').style.display = 'none'
+                            AjaxHandler.timestamp = 0
+                        }
+                    }
                 }
             }
         }
 
         xhr.open('POST', location.href + '/post')
         xhr.send( formData )
+    }
+
+    /** 
+     * Checks if there's already user data on server
+     */
+    static checkSession() {
+        this.sendPost('M20') // M20 - List room data
     }
 
     /** 
@@ -52,11 +88,11 @@ export class AjaxHandler {
         else alert('Your nickname is too long!')
     }
 
-    /** 
-     * Checks if there's already user data on server
+    /**
+     * Gets list of players in a specific room
      */
-    static checkSession() {
-        this.sendPost('M20') // M20 - List room data
+    static getPlayers() {
+        this.sendPost('M27') // M27 - Get player list
     }
 
     /**
@@ -65,12 +101,12 @@ export class AjaxHandler {
     static getRollResult() {
         this.sendPost('M80') // M80 - Get roll result
     }
-
+    
     /**
-     * Gets list of players in a specific room
+     * Pass round
      */
-    static getPlayers() {
-        this.sendPost('M27') // M27 - Get player list
+    static pass() {
+        this.sendPost('M81') // M81 - Pass
     }
 
     /**
@@ -82,9 +118,29 @@ export class AjaxHandler {
     }
 
     /**
-     * Checks if the game has started
+     * Gets data of room
      */
-    static getState() {
-        this.sendPost('M119') // M119 - Get game state
+    static getRoomData() {
+        this.sendPost('G11') // G11 - Get room data
+    }
+
+    /**
+     * Gets color of the player
+     * @param {Object} players - List of all players in the room
+     */
+    static getPlayerColor(players) {
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].uid === document.cookie.replace(/session=/, '')) return players[i].color
+        }
+    }
+
+    /**
+     * Gets state of the player
+     * @param {Object} players - List of all players in the room
+     */
+    static getPlayerState(players) {
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].uid === document.cookie.replace(/session=/, '')) return players[i].ready
+        }
     }
 }

@@ -74,11 +74,31 @@ class Player:
 
         self.cache.set('players', players)
 
-    @classmethod
-    def roll_dice(cls):
+    def roll_dice(self, uid):
         '''Generates crypto random in range <1, 6>, which emulates rolling a six-sided dice
 
         Returns:
             int: Crypto random number
         '''
-        return secrets.randbelow(6) + 1
+        rooms = self.cache.get('rooms')
+
+        for i in enumerate(rooms):
+            for player in rooms[i[0]]['players']:
+                if player['uid'] == uid:
+                    turn = self.get_next_color(rooms[i[0]]['players'], player['color'])
+                    rooms[i[0]]['data']['turn'] = turn
+
+                    self.cache.set('rooms', rooms)
+                    return secrets.randbelow(6) + 1
+
+        return '-1'
+
+    def get_next_color(self, players, color):
+        while color < 5:
+            color = 0 if color == 4 else color + 1
+            if color in self.get_player_colors(players):
+                return color
+
+    @classmethod
+    def get_player_colors(cls, players):
+        return [i['color'] for i in players]

@@ -97,8 +97,8 @@ def post():
         player_data = room_helper.get_room_from_player(sid)
         res = make_response(jsonify(player_data))
 
-    elif 'M80' in request.form:
-        res = make_response(jsonify(player_helper.roll_dice()))
+    elif 'M80' in request.form or 'M81' in request.form:
+        res = make_response(jsonify(player_helper.roll_dice(sid)))
 
     elif 'M118' in request.form:
         player_helper.set_player_state(sid, request.form['M118'])
@@ -106,6 +106,9 @@ def post():
 
     elif 'M119' in request.form:
         res = make_response(jsonify(room_helper.get_game_state(sid)))
+
+    elif 'G11' in request.form:
+        res = make_response(jsonify(room_helper.get_room_from_player(sid)))
 
     else:
         res = make_response(jsonify(cache.get('players')))
